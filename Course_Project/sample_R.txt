@@ -1,0 +1,15 @@
+x <- 1
+b <- 2
+s <- "$hello@ this is symbol *"
+ 
+a <- x-b
+
+my_array <- array(1:5, dim = c(5))
+my_array2 <- array(c(12,34,67,12), dim = c(4))
+
+# this is a comma_separated
+
+sum_func <- function(a, b) {
+    result <- a + b
+    return(result)
+}
