@@ -1,0 +1,529 @@
+Terminals unused in grammar
+
+   NOT
+   AND
+   OR
+   LEFT_BRACE
+   RIGHT_BRACE
+   FUNCTION_KEYWORD
+   RETURN_KEYWORD
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 $@1: /* empty */
+
+    2 program: $@1 statements_list
+
+    3 statements_list: /* empty */
+    4                | statements_list statement
+
+    5 statement: var_declaration functions_optional
+
+    6 var_declaration: IDENTIFIER ASSIGNMENT expr
+    7                | IDENTIFIER ASSIGNMENT NUMERIC
+    8                | IDENTIFIER ASSIGNMENT INTEGER
+    9                | IDENTIFIER ASSIGNMENT STRING
+   10                | array_declaration
+
+   11 expr: expr PLUS expr
+   12     | expr MINUS expr
+   13     | expr DIV expr
+   14     | expr MUL expr
+   15     | IDENTIFIER
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+   17 assigning_array_elements: CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN
+   18                         | numeric_sequence
+
+   19 numeric_sequence: NUMERIC COLON NUMERIC
+
+   20 comma_separated_numbers: NUMERIC
+   21                        | comma_separated_numbers COMMA NUMERIC
+
+   22 functions_optional: function
+   23                   | /* empty */
+
+   24 function: numeric_sequence
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+INTEGER (258) 8
+NUMERIC (259) 7 19 20 21
+STRING (260) 9
+NOT (261)
+AND (262)
+OR (263)
+DIV (264) 13
+MUL (265) 14
+MINUS (266) 12
+PLUS (267) 11
+EQ_ASSIGNMENT (268) 16
+ASSIGNMENT (269) 6 7 8 9 16
+IDENTIFIER (270) 6 7 8 9 15 16
+ARRAY_KEYWORD (271) 16
+COLON (272) 19
+COMMA (273) 16 21
+DIMENSION_KEYWORD (274) 16
+CONCATENATE (275) 16 17
+LEFT_PAREN (276) 16 17
+RIGHT_PAREN (277) 16 17
+LEFT_BRACE (278)
+RIGHT_BRACE (279)
+FUNCTION_KEYWORD (280)
+RETURN_KEYWORD (281)
+
+
+Nonterminals, with rules where they appear
+
+$accept (27)
+    on left: 0
+program (28)
+    on left: 2, on right: 0
+$@1 (29)
+    on left: 1, on right: 2
+statements_list (30)
+    on left: 3 4, on right: 2 4
+statement (31)
+    on left: 5, on right: 4
+var_declaration (32)
+    on left: 6 7 8 9 10, on right: 5
+expr (33)
+    on left: 11 12 13 14 15, on right: 6 11 12 13 14
+array_declaration (34)
+    on left: 16, on right: 10
+assigning_array_elements (35)
+    on left: 17 18, on right: 16
+numeric_sequence (36)
+    on left: 19, on right: 18 24
+comma_separated_numbers (37)
+    on left: 20 21, on right: 16 17 21
+functions_optional (38)
+    on left: 22 23, on right: 5
+function (39)
+    on left: 24, on right: 22
+
+
+state 0
+
+    0 $accept: . program $end
+
+    $default  reduce using rule 1 ($@1)
+
+    program  go to state 1
+    $@1      go to state 2
+
+
+state 1
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 3
+
+
+state 2
+
+    2 program: $@1 . statements_list
+
+    $default  reduce using rule 3 (statements_list)
+
+    statements_list  go to state 4
+
+
+state 3
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 4
+
+    2 program: $@1 statements_list .
+    4 statements_list: statements_list . statement
+
+    IDENTIFIER  shift, and go to state 5
+
+    $default  reduce using rule 2 (program)
+
+    statement          go to state 6
+    var_declaration    go to state 7
+    array_declaration  go to state 8
+
+
+state 5
+
+    6 var_declaration: IDENTIFIER . ASSIGNMENT expr
+    7                | IDENTIFIER . ASSIGNMENT NUMERIC
+    8                | IDENTIFIER . ASSIGNMENT INTEGER
+    9                | IDENTIFIER . ASSIGNMENT STRING
+   16 array_declaration: IDENTIFIER . ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    ASSIGNMENT  shift, and go to state 9
+
+
+state 6
+
+    4 statements_list: statements_list statement .
+
+    $default  reduce using rule 4 (statements_list)
+
+
+state 7
+
+    5 statement: var_declaration . functions_optional
+
+    NUMERIC  shift, and go to state 10
+
+    $default  reduce using rule 23 (functions_optional)
+
+    numeric_sequence    go to state 11
+    functions_optional  go to state 12
+    function            go to state 13
+
+
+state 8
+
+   10 var_declaration: array_declaration .
+
+    $default  reduce using rule 10 (var_declaration)
+
+
+state 9
+
+    6 var_declaration: IDENTIFIER ASSIGNMENT . expr
+    7                | IDENTIFIER ASSIGNMENT . NUMERIC
+    8                | IDENTIFIER ASSIGNMENT . INTEGER
+    9                | IDENTIFIER ASSIGNMENT . STRING
+   16 array_declaration: IDENTIFIER ASSIGNMENT . ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    INTEGER        shift, and go to state 14
+    NUMERIC        shift, and go to state 15
+    STRING         shift, and go to state 16
+    IDENTIFIER     shift, and go to state 17
+    ARRAY_KEYWORD  shift, and go to state 18
+
+    expr  go to state 19
+
+
+state 10
+
+   19 numeric_sequence: NUMERIC . COLON NUMERIC
+
+    COLON  shift, and go to state 20
+
+
+state 11
+
+   24 function: numeric_sequence .
+
+    $default  reduce using rule 24 (function)
+
+
+state 12
+
+    5 statement: var_declaration functions_optional .
+
+    $default  reduce using rule 5 (statement)
+
+
+state 13
+
+   22 functions_optional: function .
+
+    $default  reduce using rule 22 (functions_optional)
+
+
+state 14
+
+    8 var_declaration: IDENTIFIER ASSIGNMENT INTEGER .
+
+    $default  reduce using rule 8 (var_declaration)
+
+
+state 15
+
+    7 var_declaration: IDENTIFIER ASSIGNMENT NUMERIC .
+
+    $default  reduce using rule 7 (var_declaration)
+
+
+state 16
+
+    9 var_declaration: IDENTIFIER ASSIGNMENT STRING .
+
+    $default  reduce using rule 9 (var_declaration)
+
+
+state 17
+
+   15 expr: IDENTIFIER .
+
+    $default  reduce using rule 15 (expr)
+
+
+state 18
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD . LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    LEFT_PAREN  shift, and go to state 21
+
+
+state 19
+
+    6 var_declaration: IDENTIFIER ASSIGNMENT expr .
+   11 expr: expr . PLUS expr
+   12     | expr . MINUS expr
+   13     | expr . DIV expr
+   14     | expr . MUL expr
+
+    DIV    shift, and go to state 22
+    MUL    shift, and go to state 23
+    MINUS  shift, and go to state 24
+    PLUS   shift, and go to state 25
+
+    $default  reduce using rule 6 (var_declaration)
+
+
+state 20
+
+   19 numeric_sequence: NUMERIC COLON . NUMERIC
+
+    NUMERIC  shift, and go to state 26
+
+
+state 21
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN . assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    NUMERIC      shift, and go to state 10
+    CONCATENATE  shift, and go to state 27
+
+    assigning_array_elements  go to state 28
+    numeric_sequence          go to state 29
+
+
+state 22
+
+   13 expr: expr DIV . expr
+
+    IDENTIFIER  shift, and go to state 17
+
+    expr  go to state 30
+
+
+state 23
+
+   14 expr: expr MUL . expr
+
+    IDENTIFIER  shift, and go to state 17
+
+    expr  go to state 31
+
+
+state 24
+
+   12 expr: expr MINUS . expr
+
+    IDENTIFIER  shift, and go to state 17
+
+    expr  go to state 32
+
+
+state 25
+
+   11 expr: expr PLUS . expr
+
+    IDENTIFIER  shift, and go to state 17
+
+    expr  go to state 33
+
+
+state 26
+
+   19 numeric_sequence: NUMERIC COLON NUMERIC .
+
+    $default  reduce using rule 19 (numeric_sequence)
+
+
+state 27
+
+   17 assigning_array_elements: CONCATENATE . LEFT_PAREN comma_separated_numbers RIGHT_PAREN
+
+    LEFT_PAREN  shift, and go to state 34
+
+
+state 28
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements . COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    COMMA  shift, and go to state 35
+
+
+state 29
+
+   18 assigning_array_elements: numeric_sequence .
+
+    $default  reduce using rule 18 (assigning_array_elements)
+
+
+state 30
+
+   11 expr: expr . PLUS expr
+   12     | expr . MINUS expr
+   13     | expr . DIV expr
+   13     | expr DIV expr .
+   14     | expr . MUL expr
+
+    MINUS  shift, and go to state 24
+    PLUS   shift, and go to state 25
+
+    $default  reduce using rule 13 (expr)
+
+
+state 31
+
+   11 expr: expr . PLUS expr
+   12     | expr . MINUS expr
+   13     | expr . DIV expr
+   14     | expr . MUL expr
+   14     | expr MUL expr .
+
+    MINUS  shift, and go to state 24
+    PLUS   shift, and go to state 25
+
+    $default  reduce using rule 14 (expr)
+
+
+state 32
+
+   11 expr: expr . PLUS expr
+   12     | expr . MINUS expr
+   12     | expr MINUS expr .
+   13     | expr . DIV expr
+   14     | expr . MUL expr
+
+    $default  reduce using rule 12 (expr)
+
+
+state 33
+
+   11 expr: expr . PLUS expr
+   11     | expr PLUS expr .
+   12     | expr . MINUS expr
+   13     | expr . DIV expr
+   14     | expr . MUL expr
+
+    $default  reduce using rule 11 (expr)
+
+
+state 34
+
+   17 assigning_array_elements: CONCATENATE LEFT_PAREN . comma_separated_numbers RIGHT_PAREN
+
+    NUMERIC  shift, and go to state 36
+
+    comma_separated_numbers  go to state 37
+
+
+state 35
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA . DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    DIMENSION_KEYWORD  shift, and go to state 38
+
+
+state 36
+
+   20 comma_separated_numbers: NUMERIC .
+
+    $default  reduce using rule 20 (comma_separated_numbers)
+
+
+state 37
+
+   17 assigning_array_elements: CONCATENATE LEFT_PAREN comma_separated_numbers . RIGHT_PAREN
+   21 comma_separated_numbers: comma_separated_numbers . COMMA NUMERIC
+
+    COMMA        shift, and go to state 39
+    RIGHT_PAREN  shift, and go to state 40
+
+
+state 38
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD . EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    EQ_ASSIGNMENT  shift, and go to state 41
+
+
+state 39
+
+   21 comma_separated_numbers: comma_separated_numbers COMMA . NUMERIC
+
+    NUMERIC  shift, and go to state 42
+
+
+state 40
+
+   17 assigning_array_elements: CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN .
+
+    $default  reduce using rule 17 (assigning_array_elements)
+
+
+state 41
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT . CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    CONCATENATE  shift, and go to state 43
+
+
+state 42
+
+   21 comma_separated_numbers: comma_separated_numbers COMMA NUMERIC .
+
+    $default  reduce using rule 21 (comma_separated_numbers)
+
+
+state 43
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE . LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    LEFT_PAREN  shift, and go to state 44
+
+
+state 44
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN . comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+
+    NUMERIC  shift, and go to state 36
+
+    comma_separated_numbers  go to state 45
+
+
+state 45
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers . RIGHT_PAREN RIGHT_PAREN
+   21 comma_separated_numbers: comma_separated_numbers . COMMA NUMERIC
+
+    COMMA        shift, and go to state 39
+    RIGHT_PAREN  shift, and go to state 46
+
+
+state 46
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN . RIGHT_PAREN
+
+    RIGHT_PAREN  shift, and go to state 47
+
+
+state 47
+
+   16 array_declaration: IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN .
+
+    $default  reduce using rule 16 (array_declaration)

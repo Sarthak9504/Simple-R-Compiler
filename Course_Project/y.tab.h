@@ -42,48 +42,54 @@
      INTEGER = 258,
      NUMERIC = 259,
      STRING = 260,
-     DIV = 261,
-     MUL = 262,
-     MINUS = 263,
-     PLUS = 264,
-     EQ_ASSIGNMENT = 265,
-     IDENTIFIER = 266,
-     ASSIGNMENT = 267,
-     ARRAY_KEYWORD = 268,
-     COLON = 269,
-     COMMA = 270,
-     DIMENSION_KEYWORD = 271,
-     CONCATENATE = 272,
-     LEFT_PAREN = 273,
-     RIGHT_PAREN = 274,
-     LEFT_BRACE = 275,
-     RIGHT_BRACE = 276,
-     FUNCTION_KEYWORD = 277,
-     RETURN_KEYWORD = 278
+     NOT = 261,
+     AND = 262,
+     OR = 263,
+     DIV = 264,
+     MUL = 265,
+     MINUS = 266,
+     PLUS = 267,
+     EQ_ASSIGNMENT = 268,
+     ASSIGNMENT = 269,
+     IDENTIFIER = 270,
+     ARRAY_KEYWORD = 271,
+     COLON = 272,
+     COMMA = 273,
+     DIMENSION_KEYWORD = 274,
+     CONCATENATE = 275,
+     LEFT_PAREN = 276,
+     RIGHT_PAREN = 277,
+     LEFT_BRACE = 278,
+     RIGHT_BRACE = 279,
+     FUNCTION_KEYWORD = 280,
+     RETURN_KEYWORD = 281
    };
 #endif
 /* Tokens.  */
 #define INTEGER 258
 #define NUMERIC 259
 #define STRING 260
-#define DIV 261
-#define MUL 262
-#define MINUS 263
-#define PLUS 264
-#define EQ_ASSIGNMENT 265
-#define IDENTIFIER 266
-#define ASSIGNMENT 267
-#define ARRAY_KEYWORD 268
-#define COLON 269
-#define COMMA 270
-#define DIMENSION_KEYWORD 271
-#define CONCATENATE 272
-#define LEFT_PAREN 273
-#define RIGHT_PAREN 274
-#define LEFT_BRACE 275
-#define RIGHT_BRACE 276
-#define FUNCTION_KEYWORD 277
-#define RETURN_KEYWORD 278
+#define NOT 261
+#define AND 262
+#define OR 263
+#define DIV 264
+#define MUL 265
+#define MINUS 266
+#define PLUS 267
+#define EQ_ASSIGNMENT 268
+#define ASSIGNMENT 269
+#define IDENTIFIER 270
+#define ARRAY_KEYWORD 271
+#define COLON 272
+#define COMMA 273
+#define DIMENSION_KEYWORD 274
+#define CONCATENATE 275
+#define LEFT_PAREN 276
+#define RIGHT_PAREN 277
+#define LEFT_BRACE 278
+#define RIGHT_BRACE 279
+#define FUNCTION_KEYWORD 280
+#define RETURN_KEYWORD 281
 
 
 
@@ -93,15 +99,15 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 23 "parser_R.y"
+#line 22 "parser_R.y"
 
-    char *identifier;
     int type;
+    char *identifier;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 105 "y.tab.h"
+#line 111 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

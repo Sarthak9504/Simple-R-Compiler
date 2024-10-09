@@ -1,4 +1,6 @@
 %{
+#include "semantics.h"
+#include "symboltable.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,32 +9,34 @@
 
 int yylex(void);
 void yyerror(const char *s);
-bool is_symbol_present(char *identifier, int type);
-void add_symbol(char *identifier,int type);
-int get_symbol_type(char *identifier);
-void allocate();
-void print_symbol_table();
+Param *init_param(Param *param);
+void incr_param_count();
 extern int yylineno;
-
-#define NUMERIC_TYPE 1
-#define STR_TYPE 2
-#define INT_TYPE 3
-#define ARR_TYPE 4
+extern FILE *yyout;
+Param *param;
+int ret_type = -1;
+int param_count = 0;
+char *curr_func_name;
 %}
 
 %union {
-    char *identifier;
     int type;
+    char *identifier;
 }
 
 %token <type> INTEGER NUMERIC STRING
-%left MUL DIV
+%right NOT
+%left AND
+%left OR
+%left MUL DIV 
 %left PLUS MINUS
-%left EQ_ASSIGNMENT
-%token <identifier> IDENTIFIER 
+%right EQ_ASSIGNMENT 
+%right ASSIGNMENT
+%token<identifier> IDENTIFIER
 %token ASSIGNMENT ARRAY_KEYWORD COLON COMMA DIMENSION_KEYWORD CONCATENATE LEFT_PAREN RIGHT_PAREN
 %token LEFT_BRACE RIGHT_BRACE FUNCTION_KEYWORD RETURN_KEYWORD
-%type <type> expr numeric_sequence comma_separated_numbers array_declaration 
+%type<type> expr numeric_sequence comma_separated_numbers array_declaration return_statement parameters
+// bool_expr 
 // %token comma_separated_arguments
 
 %start program
@@ -40,94 +44,86 @@ extern int yylineno;
 %%
 
 program:
-    {allocate();} statements_list
+    { init(); param = init_param(param);} statements_list
     ;
 
 statements_list:
     | statements_list statement
     ;
 
-statement:
+statement: 
     var_declaration
-    | expr
-    | function_definition
-    ;
+    | functions_optional
+    | function_call
+    // | bool_expr
+    ;    
 
 var_declaration:
     IDENTIFIER ASSIGNMENT expr {
-        add_symbol($1, $3);
+        insert($1,$3);
     }
     | IDENTIFIER ASSIGNMENT NUMERIC {
         printf("%s has type: 1\n", $1);
-        add_symbol($1, NUMERIC_TYPE);
+        insert($1,NUMERIC_TYPE);
     }
     | IDENTIFIER ASSIGNMENT INTEGER {
         printf("%s has type: 2\n", $1);
-        add_symbol($1, INT_TYPE);
+        insert($1, INT_TYPE);
     }
     | IDENTIFIER ASSIGNMENT STRING {
         printf("%s has type: 3\n", $1);
-        add_symbol($1, STR_TYPE);
+        insert($1, STR_TYPE);
     }
     | array_declaration { }
     ;
 
 expr:
     expr PLUS expr {
-        int type1 = $1;
-        int type2 = $3;
-
-        if(type1 != type2){
-            yyerror("type mismatch");
-        } else{
-            $$ = type1;
-        }
+        $$ = get_result_type($1,$3,ARITHM_OP);
     }
     | expr MINUS expr {
-        int type1 = $1;
-        int type2 = $3;
-
-        if(type1 != type2){
-            yyerror("type mismatch");
-        } else{
-            $$ = type1;
-        }
+        $$ = get_result_type($1,$3,ARITHM_OP);
     }
     | expr DIV expr {
-        int type1 = $1;
-        int type2 = $3;
-
-        if(type1 != type2){
-            yyerror("type mismatch");
-        } else{
-            $$ = type1;
-        }
+        $$ = get_result_type($1,$3,ARITHM_OP);
     }
     | expr MUL expr {
-        int type1 = $1;
-        int type2 = $3;
-
-        if(type1 != type2){
-            yyerror("type mismatch");
-        } else{
-            $$ = type1;
-        }
+        $$ = get_result_type($1,$3,ARITHM_OP);
     }
     | IDENTIFIER { $$ = get_symbol_type($1);}
     ;
+
+/*
+bool_expr:
+    expr ASSIGNMENT expr
+    | bool_expr AND bool_expr {
+        $$ = get_symbol_type($1, $3, BOOL_OP);
+    }
+    | bool_expr OR bool_expr {
+        $$ = get_symbol_type($1, $3, BOOL_OP);
+    }
+    | NOT bool_expr {
+        $$ = get_symbol_type($2, BOOL_OP);
+    }
+    | IDENTIFIER {
+        $$ = get_symbol_type($1);
+    }
+    ;
+*/
 
 
 array_declaration:
     IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
     {
         printf("Array inititalized\n");
-        add_symbol($1,ARR_TYPE);
+        insert($1,ARR_TYPE);
     }
     ;
 
 assigning_array_elements:
     CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN
     | numeric_sequence
+    ;
 
 numeric_sequence:
     NUMERIC COLON NUMERIC
@@ -141,85 +137,86 @@ comma_separated_numbers:
     | comma_separated_numbers COMMA NUMERIC {  }
     ;
 
-function_definition:
-    IDENTIFIER ASSIGNMENT FUNCTION_KEYWORD LEFT_PAREN comma_separated_arguments RIGHT_PAREN LEFT_BRACE statements_list return_statement RIGHT_BRACE
+function_call: IDENTIFIER LEFT_PAREN call_params RIGHT_PAREN {
+        check_func_call($1, param, param_count);
+        print_table();
+    }
+    ; 
+
+call_params:
+    parameter
+    | call_params COMMA parameter
+    | 
+    ;
+
+parameter:
+    IDENTIFIER { param[param_count].type = get_symbol_type($1); incr_param_count(); }
+    | INTEGER { param[param_count].type = INT_TYPE; incr_param_count(); }
+    | NUMERIC { param[param_count].type = NUMERIC_TYPE; incr_param_count(); }
+    | STRING { param[param_count].type = STR_TYPE; incr_param_count(); }
+    ;
+
+functions_optional: 
+    function
+    ;
+
+function: 
+    function_head function_tail {
+        // printf("Current func name: %s",curr_func_name);
+        insert_func(param, param_count, curr_func_name, ret_type);
+        param_count = 0;
+        hide_scope();
+    }
+    ;
+
+function_head:
+    IDENTIFIER ASSIGNMENT FUNCTION_KEYWORD LEFT_PAREN RIGHT_PAREN
+    {
+        insert($1, FUNC_TYPE);
+        curr_func_name = $1;
+        incr_scope();
+    }
+    | IDENTIFIER ASSIGNMENT FUNCTION_KEYWORD LEFT_PAREN parameters RIGHT_PAREN
+    {
+        insert($1, FUNC_TYPE);
+        curr_func_name = $1;
+        incr_scope();
+    }
+    ;
+
+function_tail:
+    LEFT_BRACE function_body RIGHT_BRACE
+    ;
+
+function_body:
+    statements_list return_statement   
     ;
 
 return_statement:
-    | RETURN_KEYWORD LEFT_PAREN IDENTIFIER RIGHT_PAREN
+    RETURN_KEYWORD LEFT_PAREN IDENTIFIER RIGHT_PAREN { ret_type = get_symbol_type($3); }
+    | {  }
     ;
 
-comma_separated_arguments:
-    | IDENTIFIER { }
-    | comma_separated_arguments COMMA IDENTIFIER { }
+parameters:
+    IDENTIFIER { param[param_count].param = $1; param[param_count].type = -1; incr_param_count(); }
+    | parameters COMMA IDENTIFIER { param[param_count].param = $3; param[param_count].type = -1; incr_param_count(); }
     ;
-    
 
 %%
 
-struct symbol_table{
-    char *identifier;
-    int type;
-};
-
-struct symbol_table *symbol_table_entry;
-
-
-int symbol_index=0;
-
-bool is_symbol_present(char *identifier,int type){
-    for(int i=0;i<symbol_index;i++){
-        if(strcmp(symbol_table_entry[i].identifier,identifier)==0){
-            strcpy(symbol_table_entry[symbol_index].identifier,identifier);
-            symbol_table_entry[symbol_index].type = type;
-            return true;
-        }
+Param *init_param(Param *param)
+{
+    param_count = 0;
+    if(param!=NULL){
+        free(param);
     }
-
-    return false;
+    param = (Param *)malloc(10 * sizeof(Param));
+    return param;
 }
 
-void add_symbol(char *identifier,int type){
-    // printf("here %s\n",identifier);
-    printf("identifier: %s\n",identifier);
-
-    if(!is_symbol_present(identifier,type)){
-        symbol_table_entry[symbol_index].identifier = malloc(strlen(identifier) + 1);
-        strcpy(symbol_table_entry[symbol_index].identifier,identifier);
-        symbol_table_entry[symbol_index].type = type;
-
-
-        // printf("%s\n",symbol_table_entry[symbol_index].identifier);
-        symbol_index++;
-
-    }
-}
-
-void allocate(){
-    symbol_table_entry = (struct symbol_table *)malloc(100 * sizeof(struct symbol_table));
-    if (!symbol_table_entry) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(1);
-    }
-}
-
-int get_symbol_type(char *identifier){
-    for(int i=0;i<symbol_index;i++){
-        if(strcmp(symbol_table_entry[i].identifier,identifier)==0){
-            // printf("identifier: %s,type: %d\n",identifier,symbol_table_entry[i].type);
-            return symbol_table_entry[i].type;
-        }
-    }
-
-    yyerror("Variable not declared");
-    return -1;
-}
-
-void print_symbol_table(){
-    printf("Symbol table is here: ");
-    for(int i=0;i<symbol_index;i++){
-        printf("Identifier: %s, type: %d\n",symbol_table_entry[i].identifier,symbol_table_entry[i].type);
-    }
+void incr_param_count()
+{
+    param_count++;
 }
 
 void yyerror(const char *s) {
@@ -229,7 +226,7 @@ void yyerror(const char *s) {
 
 int main(void) {
     int parser_ret = yyparse();
-    print_symbol_table();
+    // print_table();
 
     if(parser_ret==0){
         printf("The program is correct");

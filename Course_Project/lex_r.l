@@ -28,6 +28,9 @@
 "-"                        { printf("MINUS\n"); return MINUS; }
 "/"                        { printf("DIV\n"); return DIV; }
 "*"                        { printf("MUL\n"); return MUL; }
+"&&"                       { printf("MUL\n"); return AND; }
+"||"                       { printf("MUL\n"); return OR; }
+"!"                        { printf("MUL\n"); return NOT; }
 [+-]?([0-9]+L)             { printf("INTEGER\n"); return INTEGER; }
 [a-zA-Z_][a-zA-Z0-9_]*     { yylval.identifier = strdup(yytext); return IDENTIFIER; }
 [+-]?([0-9]+[.])?[0-9]+    { return NUMERIC; }

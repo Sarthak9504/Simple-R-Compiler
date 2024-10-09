@@ -1,6 +1,6 @@
 x <- 1
 b <- 2
-s <- "$hello@ this is symbol *"
+z <- "$hello@ this is symbol *"
  
 a <- x-b
 
@@ -9,7 +9,21 @@ my_array2 <- array(c(12,34,67,12), dim = c(4))
 
 # this is a comma_separated
 
-sum_func <- function(a, b) {
-    result <- a + b
+sum_func <- function(m, s) {
+    m <- 12L
+    s <- 10L
+    result <- m + s
     return(result)
+}
+
+
+
+another_func <- function(g,f,s){
+    hello <- "hello World!!"
+
+    return (hello)
+}
+
+non_ret_func <- function(param1,param2,param3){
+    hii <- "123"
 }
