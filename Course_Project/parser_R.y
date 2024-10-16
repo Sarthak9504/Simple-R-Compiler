@@ -11,9 +11,15 @@ int yylex(void);
 void yyerror(const char *s);
 Param *init_param(Param *param);
 void incr_param_count();
+void add_arr_vals(Value val); 
+
 extern int yylineno;
 extern FILE *yyout;
+
 Param *param;
+Value *vals;
+
+int array_size = 0;
 int ret_type = -1;
 int param_count = 0;
 char *curr_func_name;
@@ -22,9 +28,10 @@ char *curr_func_name;
 %union {
     int type;
     char *identifier;
+    Value val;
 }
 
-%token <type> INTEGER NUMERIC STRING
+%token<val> INTEGER NUMERIC STRING
 %right NOT
 %left AND
 %left OR
@@ -36,6 +43,7 @@ char *curr_func_name;
 %token ASSIGNMENT ARRAY_KEYWORD COLON COMMA DIMENSION_KEYWORD CONCATENATE LEFT_PAREN RIGHT_PAREN
 %token LEFT_BRACE RIGHT_BRACE FUNCTION_KEYWORD RETURN_KEYWORD
 %type<type> expr numeric_sequence comma_separated_numbers array_declaration return_statement parameters
+%type<node> var_declaration
 // bool_expr 
 // %token comma_separated_arguments
 
@@ -64,15 +72,15 @@ var_declaration:
     }
     | IDENTIFIER ASSIGNMENT NUMERIC {
         printf("%s has type: 1\n", $1);
-        insert($1,NUMERIC_TYPE);
+        insert_const($1,NUMERIC_TYPE,$3);
     }
     | IDENTIFIER ASSIGNMENT INTEGER {
         printf("%s has type: 2\n", $1);
-        insert($1, INT_TYPE);
+        insert_const($1, INT_TYPE,$3);
     }
     | IDENTIFIER ASSIGNMENT STRING {
         printf("%s has type: 3\n", $1);
-        insert($1, STR_TYPE);
+        insert_const($1, STR_TYPE,$3);
     }
     | array_declaration { }
     ;
@@ -116,30 +124,50 @@ array_declaration:
     IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
     {
         printf("Array inititalized\n");
-        insert($1,ARR_TYPE);
+        insert_arr($1,ARR_TYPE,array_size-1,vals);
+        array_size = 0;
+    }
+    | IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements RIGHT_PAREN
+    {
+        printf("Array inititalized\n");
+        insert_arr($1,ARR_TYPE,array_size,vals);
+        array_size = 0;
     }
     ;
 
 assigning_array_elements:
-    CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN
+    CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN 
     | numeric_sequence
     ;
 
 numeric_sequence:
     NUMERIC COLON NUMERIC
     {
-        // printf("from: %d, to: %d\n",$1,$3);
+        for (float i = $1.float_val; i <= $3.float_val; i++) {
+            // printf("%f ",i);
+            Value val;
+            val.float_val = i;
+            add_arr_vals(val);
+        }
     }
     ;
 
 comma_separated_numbers:
-    NUMERIC { $$ = $1; }
-    | comma_separated_numbers COMMA NUMERIC {  }
+    NUMERIC {
+        Value val;
+        val = $1;
+        add_arr_vals(val); 
+    }
+    | comma_separated_numbers COMMA NUMERIC {
+        Value val;
+        val = $3;
+        add_arr_vals(val);
+    }
     ;
 
 function_call: IDENTIFIER LEFT_PAREN call_params RIGHT_PAREN {
         check_func_call($1, param, param_count);
-        print_table();
+        param_count = 0;
     }
     ; 
 
@@ -219,6 +247,20 @@ void incr_param_count()
     param_count++;
 }
 
+void add_arr_vals(Value val){
+	if(array_size == 0){
+		array_size = 1;
+		vals = (Value *) malloc(1 * sizeof(Value));
+		vals[0] = val;
+	}
+	else{
+		array_size++;
+		vals = (Value *) realloc(vals, array_size * sizeof(Value));
+		vals[array_size - 1] = val;
+	}
+
+}
+
 void yyerror(const char *s) {
     fprintf(stderr, "Error: %s at line %d\n", s, yylineno);
     exit(1);
@@ -226,7 +268,7 @@ void yyerror(const char *s) {
 
 int main(void) {
     int parser_ret = yyparse();
-    // print_table();
+    print_table();
 
     if(parser_ret==0){
         printf("The program is correct");

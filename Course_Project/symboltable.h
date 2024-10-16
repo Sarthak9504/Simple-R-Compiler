@@ -7,22 +7,36 @@
 #define ARR_TYPE 5
 #define FUNC_TYPE 6
 
+typedef union Value
+{
+    int int_val;
+    float float_val;
+    char *str_val;
+} Value;
+
 typedef struct parameters
 {
     char *param;
     int type;
+
+    Value val;
 } Param;
 
 typedef struct list_node
 {
     char *identifier;
     int type;
+    Value val;
     int scope;
 
     // for functions
     Param *param;
     int num_of_params;
     int ret_type;
+
+    // for arrays
+    int arr_size;
+    Value *vals;
 
     struct list_node *next;
 } list;
@@ -31,6 +45,8 @@ list **hash_table;
 
 void init();
 void insert(char *name, int type);
+void insert_const(char *name, int type, Value val);
+void insert_arr(char *name, int type, int arr_size, Value *vals);
 list *lookup(char *name);
 int get_symbol_type(char *name);
 void hide_scope();

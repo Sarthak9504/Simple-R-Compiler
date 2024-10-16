@@ -430,10 +430,11 @@ char *yytext;
 #define INITIAL 0
 #line 2 "lex_r.l"
 
+#include "symboltable.h"
 #include "y.tab.h"
 #include <string.h>
 
-#line 437 "lex.yy.c"
+#line 438 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -584,10 +585,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 10 "lex_r.l"
+#line 11 "lex_r.l"
 
 
-#line 591 "lex.yy.c"
+#line 592 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -680,140 +681,141 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 12 "lex_r.l"
+#line 13 "lex_r.l"
 { }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 13 "lex_r.l"
+#line 14 "lex_r.l"
 { }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 14 "lex_r.l"
+#line 15 "lex_r.l"
 { printf("ARRAY_KEYWORD\n"); return ARRAY_KEYWORD; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "lex_r.l"
+#line 16 "lex_r.l"
 { printf("DIMENSION_KEYWORD\n"); return DIMENSION_KEYWORD; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 16 "lex_r.l"
+#line 17 "lex_r.l"
 { printf("FUNCTION_KEYWORD\n"); return FUNCTION_KEYWORD; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 17 "lex_r.l"
+#line 18 "lex_r.l"
 { printf("RETURN_KEYWORD\n"); return RETURN_KEYWORD; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 18 "lex_r.l"
+#line 19 "lex_r.l"
 { printf("CONCATENATE\n"); return CONCATENATE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 19 "lex_r.l"
+#line 20 "lex_r.l"
 { printf("EQ_ASSIGNMENT\n"); return EQ_ASSIGNMENT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 20 "lex_r.l"
+#line 21 "lex_r.l"
 { printf("LEFT_PAREN\n"); return LEFT_PAREN; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 21 "lex_r.l"
+#line 22 "lex_r.l"
 { printf("RIGHT_PAREN\n"); return RIGHT_PAREN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 22 "lex_r.l"
+#line 23 "lex_r.l"
 { printf("LEFT_BRACE\n"); return LEFT_BRACE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 23 "lex_r.l"
+#line 24 "lex_r.l"
 { printf("RIGHT_BRACE\n"); return RIGHT_BRACE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 24 "lex_r.l"
+#line 25 "lex_r.l"
 { printf("COLON\n"); return COLON; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 25 "lex_r.l"
+#line 26 "lex_r.l"
 { printf("COMMA\n"); return COMMA; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 26 "lex_r.l"
+#line 27 "lex_r.l"
 { printf("ASSIGNMENT\n"); return ASSIGNMENT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 27 "lex_r.l"
+#line 28 "lex_r.l"
 { printf("PLUS\n"); return PLUS; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 28 "lex_r.l"
+#line 29 "lex_r.l"
 { printf("MINUS\n"); return MINUS; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 29 "lex_r.l"
+#line 30 "lex_r.l"
 { printf("DIV\n"); return DIV; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 30 "lex_r.l"
+#line 31 "lex_r.l"
 { printf("MUL\n"); return MUL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 31 "lex_r.l"
+#line 32 "lex_r.l"
 { printf("MUL\n"); return AND; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 32 "lex_r.l"
+#line 33 "lex_r.l"
 { printf("MUL\n"); return OR; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 33 "lex_r.l"
+#line 34 "lex_r.l"
 { printf("MUL\n"); return NOT; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 34 "lex_r.l"
-{ printf("INTEGER\n"); return INTEGER; }
+#line 35 "lex_r.l"
+{ yylval.val.int_val = atoi(yytext); printf("INTEGER\n"); return INTEGER; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 35 "lex_r.l"
+#line 36 "lex_r.l"
 { yylval.identifier = strdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 36 "lex_r.l"
-{ return NUMERIC; }
+#line 37 "lex_r.l"
+{ yylval.val.float_val = atof(yytext); return NUMERIC; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 37 "lex_r.l"
-{ return STRING; }
+#line 38 "lex_r.l"
+{ yylval.val.str_val = malloc(yyleng * sizeof(char));
+				             strcpy(yylval.val.str_val, yytext); return STRING; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 39 "lex_r.l"
+#line 41 "lex_r.l"
 ECHO;
 	YY_BREAK
-#line 817 "lex.yy.c"
+#line 819 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1697,7 +1699,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 39 "lex_r.l"
+#line 41 "lex_r.l"
 
 
 int yywrap() {

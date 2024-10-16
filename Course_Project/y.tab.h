@@ -99,15 +99,16 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 22 "parser_R.y"
+#line 28 "parser_R.y"
 
     int type;
     char *identifier;
+    Value val;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 111 "y.tab.h"
+#line 112 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -6,6 +6,7 @@
 int curr_scope = 0;
 int declare = 0;
 int param_count;
+FILE *file;
 
 void init()
 {
@@ -63,6 +64,62 @@ void insert(char *name, int type)
             new_node->type = type;
             new_node->next = hash_table[hash_val];
             hash_table[hash_val] = new_node;
+        }
+    }
+}
+
+void insert_const(char *name, int type, Value val)
+{
+    insert(name, type);
+
+    int hash_val = hash(name);
+    list *node = hash_table[hash_val];
+
+    while (node != NULL && strcmp(node->identifier, name) != 0)
+    {
+        node = node->next;
+    }
+
+    if (node != NULL)
+    {
+        if (node->scope == curr_scope)
+        {
+            node->val = val;
+        }
+    }
+}
+
+void insert_arr(char *name, int type, int arr_size, Value *vals)
+{
+    insert(name, type);
+
+    int hash_val = hash(name);
+    list *node = hash_table[hash_val];
+
+    while (node != NULL && strcmp(node->identifier, name) != 0)
+    {
+        node = node->next;
+    }
+
+    // printf("array node: %s\n", node->identifier);
+
+    if (node != NULL)
+    {
+        if (node->scope == curr_scope)
+        {
+            node->vals = (Value *)malloc(arr_size * sizeof(Value));
+            printf("%d\n", arr_size);
+            for (int i = 0; i < arr_size; i++)
+            {
+                node->vals[i] = vals[i];
+            }
+
+            for (int i = 0; i < arr_size; i++)
+            {
+                printf("%f\n", node->vals[i].float_val);
+            }
+
+            node->arr_size = arr_size;
         }
     }
 }
@@ -143,6 +200,7 @@ int insert_func(Param *parameters, int num_params, char *func_name, int ret_type
         {
             node->param[i].param = (char *)malloc(strlen(parameters[i].param) + 1);
             strcpy(node->param[i].param, parameters[i].param);
+            node->param[i].type = -1;
         }
 
         return 0;
@@ -172,9 +230,16 @@ void check_func_call(char *func_name, Param *params, int num_params)
 
 void print_table()
 {
-    printf("------------ ------ ------ ------------\n");
-    printf("Name         Type   Scope   Return Type\n");
-    printf("------------ ------ ------ ------------\n");
+    file = fopen("symbol_table.txt", "a");
+    if (file == NULL)
+    {
+        fprintf(stderr, "Error opening file for writing\n");
+        return;
+    }
+
+    fprintf(file, "------------ ------ ------ -------------------------\n");
+    fprintf(file, "Name         Type   Scope   Return Type/Value\n");
+    fprintf(file, "------------ ------ ------ -------------------------\n");
 
     for (int i = 0; i < TABLE_SIZE; i++)
     {
@@ -183,24 +248,66 @@ void print_table()
         {
             if (node->type == FUNC_TYPE)
             {
-                printf("%-12s %-6d %-6d %-12d\n", node->identifier, node->type, node->scope, node->ret_type);
+                fprintf(file, "%-12s %-6d %-6d %-12d\n", node->identifier, node->type, node->scope, node->ret_type);
+            }
+            else if (node->type == ARR_TYPE && node->arr_size > 0)
+            {
+                fprintf(file, "%-12s %-6d %-6d Array of size %d: [", node->identifier, node->type, node->scope, node->arr_size);
+                for (int j = 0; j < node->arr_size; j++)
+                {
+                    fprintf(file, "%f", node->vals[j].float_val);
+                    if (j < node->arr_size - 1)
+                    {
+                        fprintf(file, ", ");
+                    }
+                }
+                fprintf(file, "]\n");
             }
             else
             {
-                printf("%-12s %-6d %-6d\n", node->identifier, node->type, node->scope);
+                fprintf(file, "%-12s %-6d %-6d", node->identifier, node->type, node->scope);
+
+                if (node->val.int_val != 0 || node->val.float_val != 0.0 || node->val.str_val != NULL)
+                {
+                    fprintf(file, " Value: ");
+                    switch (node->type)
+                    {
+                    case INT_TYPE:
+                        fprintf(file, "%d", node->val.int_val);
+                        break;
+                    case NUMERIC_TYPE:
+                        fprintf(file, "%f", node->val.float_val);
+                        break;
+                    case STR_TYPE:
+                        fprintf(file, "%s", node->val.str_val);
+                        break;
+                    default:
+                        fprintf(file, "Unknown type");
+                    }
+                }
+                fprintf(file, "\n");
             }
 
             if (node->type == FUNC_TYPE)
             {
-                printf("  Parameters (%d):\n", node->num_of_params);
-                for (int j = 0; j < node->num_of_params; j++)
+                if (node->num_of_params != 0)
                 {
-                    printf("    %-12s\n", node->param[j].param, node->param[j].type);
+                    fprintf(file, "  Parameters (%d):\n", node->num_of_params);
+                    fprintf(file, "    %-12s %-12s\n", "Param Name", "Param Type");
+                    fprintf(file, "    ------------ ------------\n");
+
+                    for (int j = 0; j < node->num_of_params; j++)
+                    {
+                        fprintf(file, "    %-12s %-12d\n", node->param[j].param, node->param[j].type);
+                    }
                 }
             }
 
             node = node->next;
         }
     }
-    printf("------------ ------ ------ ------------\n");
+    fprintf(file, "------------ ------ ------ -------------------------\n");
+    fprintf(file, "Symbol Table Ends here!! \n\n\n");
+
+    fclose(file);
 }

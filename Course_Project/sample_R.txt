@@ -1,11 +1,13 @@
 x <- 1
-b <- 2
+b <- 2L
 z <- "$hello@ this is symbol *"
  
 a <- x-b
 
 my_array <- array(1:5, dim = c(5))
 my_array2 <- array(c(12,34,67,12), dim = c(4))
+my_array1 <- array(c(1,78,34,90,23,7))
+my_array3 <- array(1:10)
 
 # this is a comma_separated
 
@@ -16,14 +18,24 @@ sum_func <- function(m, s) {
     return(result)
 }
 
+sum_func(z,b)
 
-
-another_func <- function(g,f,s){
+another_func <- function(){
     hello <- "hello World!!"
 
     return (hello)
 }
 
+another_func()
+
 non_ret_func <- function(param1,param2,param3){
     hii <- "123"
 }
+
+
+sarthak <- "this is a variable"
+myarray <- "this is not an array" # printing symbol table after function
+
+my_array3 <- array(1:8)
+
+x <- "interger to string"

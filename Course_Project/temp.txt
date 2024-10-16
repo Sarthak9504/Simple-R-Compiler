@@ -1,8 +1,0 @@
-'+'                       { printf("plus is identified\n"); return PLUS; }
-'-'                       { return MINUS; }
-'/'                       { return DIV; }
-'*'                       { return MUL; }
-
-
-
-

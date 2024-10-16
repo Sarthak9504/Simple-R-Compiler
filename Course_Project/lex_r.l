@@ -1,5 +1,6 @@
 %{
 
+#include "symboltable.h"
 #include "y.tab.h"
 #include <string.h>
 
@@ -31,10 +32,11 @@
 "&&"                       { printf("MUL\n"); return AND; }
 "||"                       { printf("MUL\n"); return OR; }
 "!"                        { printf("MUL\n"); return NOT; }
-[+-]?([0-9]+L)             { printf("INTEGER\n"); return INTEGER; }
+[+-]?([0-9]+L)             { yylval.val.int_val = atoi(yytext); printf("INTEGER\n"); return INTEGER; }
 [a-zA-Z_][a-zA-Z0-9_]*     { yylval.identifier = strdup(yytext); return IDENTIFIER; }
-[+-]?([0-9]+[.])?[0-9]+    { return NUMERIC; }
-["]([^"]|\\(.|\n))*["]     { return STRING; }
+[+-]?([0-9]+[.])?[0-9]+    { yylval.val.float_val = atof(yytext); return NUMERIC;}
+["]([^"]|\\(.|\n))*["]     { yylval.val.str_val = malloc(yyleng * sizeof(char));
+				             strcpy(yylval.val.str_val, yytext); return STRING; }
 
 %%
 
