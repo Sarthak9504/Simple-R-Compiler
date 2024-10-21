@@ -23,13 +23,13 @@ sum_func(z,b)
 another_func <- function(){
     hello <- "hello World!!"
 
-    return (hello)
+    return (x)
 }
 
 another_func()
 
 non_ret_func <- function(param1,param2,param3){
-    hii <- "123"
+    return("123")
 }
 
 

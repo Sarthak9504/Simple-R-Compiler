@@ -42,7 +42,7 @@ char *curr_func_name;
 %token<identifier> IDENTIFIER
 %token ASSIGNMENT ARRAY_KEYWORD COLON COMMA DIMENSION_KEYWORD CONCATENATE LEFT_PAREN RIGHT_PAREN
 %token LEFT_BRACE RIGHT_BRACE FUNCTION_KEYWORD RETURN_KEYWORD
-%type<type> expr numeric_sequence comma_separated_numbers array_declaration return_statement parameters
+%type<type> expr numeric_sequence comma_separated_numbers array_declaration return_statement parameters ret_value
 %type<node> var_declaration
 // bool_expr 
 // %token comma_separated_arguments
@@ -221,8 +221,15 @@ function_body:
     ;
 
 return_statement:
-    RETURN_KEYWORD LEFT_PAREN IDENTIFIER RIGHT_PAREN { ret_type = get_symbol_type($3); }
+    RETURN_KEYWORD LEFT_PAREN ret_value RIGHT_PAREN { ret_type = $3; }
     | {  }
+    ;
+
+ret_value:
+    IDENTIFIER { $$ = get_symbol_type($1); }
+    | STRING { $$ = STR_TYPE; }
+    | NUMERIC { $$ = NUMERIC_TYPE; }
+    | INTEGER { $$ = INT_TYPE; }
     ;
 
 parameters:

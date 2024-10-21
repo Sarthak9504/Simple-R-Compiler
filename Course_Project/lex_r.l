@@ -10,7 +10,7 @@
 
 %%
 
-[ \n\t]+               { }
+[ \n\t]+                   { }                               
 "#".*                        { }
 "array"                    { printf("ARRAY_KEYWORD\n"); return ARRAY_KEYWORD; }
 "dim"                      { printf("DIMENSION_KEYWORD\n"); return DIMENSION_KEYWORD; }
@@ -37,6 +37,7 @@
 [+-]?([0-9]+[.])?[0-9]+    { yylval.val.float_val = atof(yytext); return NUMERIC;}
 ["]([^"]|\\(.|\n))*["]     { yylval.val.str_val = malloc(yyleng * sizeof(char));
 				             strcpy(yylval.val.str_val, yytext); return STRING; }
+.                          {printf("Unknown symbol"); exit(0); }
 
 %%
 
