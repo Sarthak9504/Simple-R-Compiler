@@ -1,0 +1,11 @@
+1) Compile Lex code
+flex lex_r.l
+
+2) Compile Bison Code
+bison -dy parser_R.y
+
+3) Merge and Compile all the C files 
+gcc lex.yy.c y.tab.c semantics.c symboltable.c -o parser_R.exe
+
+4) Execute the parser_R.exe file 
+parser_R.exe < input.txt

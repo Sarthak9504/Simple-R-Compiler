@@ -1,13 +1,17 @@
 x <- 1
 b <- 2L
+float <- 3.14
 z <- "$hello@ this is symbol *"
  
 a <- x-b
+c <- z
 
 my_array <- array(1:5, dim = c(5))
 my_array2 <- array(c(12,34,67,12), dim = c(4))
 my_array1 <- array(c(1,78,34,90,23,7))
 my_array3 <- array(1:10)
+
+array <- a
 
 # this is a comma_separated
 

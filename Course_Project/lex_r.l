@@ -12,11 +12,11 @@
 
 [ \n\t]+                   { }                               
 "#".*                        { }
-"array"                    { printf("ARRAY_KEYWORD\n"); return ARRAY_KEYWORD; }
+"array("                    { printf("ARRAY_KEYWORD\n"); return ARRAY_KEYWORD; }
 "dim"                      { printf("DIMENSION_KEYWORD\n"); return DIMENSION_KEYWORD; }
 "function"                 { printf("FUNCTION_KEYWORD\n"); return FUNCTION_KEYWORD; }
 "return"                   { printf("RETURN_KEYWORD\n"); return RETURN_KEYWORD; }
-"c"                        { printf("CONCATENATE\n"); return CONCATENATE; }
+"c("                        { printf("CONCATENATE\n"); return CONCATENATE; }
 "="                        { printf("EQ_ASSIGNMENT\n"); return EQ_ASSIGNMENT; }
 "("                        { printf("LEFT_PAREN\n"); return LEFT_PAREN; }
 ")"                        { printf("RIGHT_PAREN\n"); return RIGHT_PAREN; }

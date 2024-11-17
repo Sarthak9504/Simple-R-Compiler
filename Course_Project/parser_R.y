@@ -121,13 +121,13 @@ bool_expr:
 
 
 array_declaration:
-    IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
+    IDENTIFIER ASSIGNMENT ARRAY_KEYWORD assigning_array_elements COMMA DIMENSION_KEYWORD EQ_ASSIGNMENT CONCATENATE comma_separated_numbers RIGHT_PAREN RIGHT_PAREN
     {
         printf("Array inititalized\n");
         insert_arr($1,ARR_TYPE,array_size-1,vals);
         array_size = 0;
     }
-    | IDENTIFIER ASSIGNMENT ARRAY_KEYWORD LEFT_PAREN assigning_array_elements RIGHT_PAREN
+    | IDENTIFIER ASSIGNMENT ARRAY_KEYWORD assigning_array_elements RIGHT_PAREN
     {
         printf("Array inititalized\n");
         insert_arr($1,ARR_TYPE,array_size,vals);
@@ -136,7 +136,7 @@ array_declaration:
     ;
 
 assigning_array_elements:
-    CONCATENATE LEFT_PAREN comma_separated_numbers RIGHT_PAREN 
+    CONCATENATE comma_separated_numbers RIGHT_PAREN 
     | numeric_sequence
     ;
 

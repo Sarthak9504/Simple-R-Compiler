@@ -8,6 +8,8 @@ my_array3    5      0      Array of size 10: [1.000000, 2.000000, 3.000000, 4.00
 s            3      1      Value: 10
 x            1      0      Value: 1.000000
 z            2      0      Value: "$hello@ this is symbol *"
+float        1      0      Value: 3.140000
+array        1      0      Value: 0.000000
 sum_func     6      0      3           
   Parameters (2):
     Param Name   Param Type  
@@ -15,9 +17,10 @@ sum_func     6      0      3
     m            -1          
     s            -1          
 my_array     5      0      Array of size 5: [1.000000, 2.000000, 3.000000, 4.000000, 5.000000]
-result       3      1      Value: 34603536
-a            1      0      Value: 0.000000
+result       3      1      Value: -1414878808
+a            1      0      Value: 2.144533
 b            3      0      Value: 2
+c            2      0      Value: C
 ------------ ------ ------ -------------------------
 Symbol Table Ends here!! 
 
@@ -31,6 +34,8 @@ my_array3    5      0      Array of size 10: [1.000000, 2.000000, 3.000000, 4.00
 x            1      0      Value: 1.000000
 z            2      0      Value: "$hello@ this is symbol *"
 hello        2      1      Value: "hello World!!"
+float        1      0      Value: 3.140000
+array        1      0      Value: 0.000000
 sum_func     6      0      3           
   Parameters (2):
     Param Name   Param Type  
@@ -39,8 +44,9 @@ sum_func     6      0      3
     s            3           
 my_array     5      0      Array of size 5: [1.000000, 2.000000, 3.000000, 4.000000, 5.000000]
 another_func 6      0      1           
-a            1      0      Value: 0.000000
+a            1      0      Value: 2.144533
 b            3      0      Value: 2
+c            2      0      Value: C
 ------------ ------ ------ -------------------------
 Symbol Table Ends here!! 
 
@@ -53,6 +59,8 @@ my_array2    5      0      Array of size 4: [12.000000, 34.000000, 67.000000, 12
 my_array3    5      0      Array of size 10: [1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000, 7.000000, 8.000000, 9.000000, 10.000000]
 x            1      0      Value: 1.000000
 z            2      0      Value: "$hello@ this is symbol *"
+float        1      0      Value: 3.140000
+array        1      0      Value: 0.000000
 sum_func     6      0      3           
   Parameters (2):
     Param Name   Param Type  
@@ -68,8 +76,9 @@ non_ret_func 6      0      2
     param1       -1          
     param2       -1          
     param3       -1          
-a            1      0      Value: 0.000000
+a            1      0      Value: 2.144533
 b            3      0      Value: 2
+c            2      0      Value: C
 ------------ ------ ------ -------------------------
 Symbol Table Ends here!! 
 
@@ -82,6 +91,8 @@ my_array2    5      0      Array of size 4: [12.000000, 34.000000, 67.000000, 12
 my_array3    5      0      Array of size 8: [1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000, 7.000000, 8.000000]
 x            2      0      Value: "interger to string"
 z            2      0      Value: "$hello@ this is symbol *"
+float        1      0      Value: 3.140000
+array        1      0      Value: 0.000000
 sarthak      2      0      Value: "this is a variable"
 sum_func     6      0      3           
   Parameters (2):
@@ -99,8 +110,9 @@ non_ret_func 6      0      2
     param1       -1          
     param2       -1          
     param3       -1          
-a            1      0      Value: 0.000000
+a            1      0      Value: 2.144533
 b            3      0      Value: 2
+c            2      0      Value: C
 ------------ ------ ------ -------------------------
 Symbol Table Ends here!! 
 
